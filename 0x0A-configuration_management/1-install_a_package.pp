@@ -5,3 +5,4 @@ package { 'flask':
   provider       => 'pip3',
   install_options => ['--version', '2.1.0'],
 }
+
