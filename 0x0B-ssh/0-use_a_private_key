@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Bash script to connect to a server using ssh with single-character flags
+
+ssh -i ~/.ssh/school ubuntu@513718-web-01
+
