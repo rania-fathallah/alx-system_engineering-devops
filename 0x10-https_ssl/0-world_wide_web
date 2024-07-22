@@ -1,35 +1,19 @@
 #!/usr/bin/env bash
-# Usage: ./0-world_wide_web <domain> [subdomain]
+# Usage: ./0-world_wide_web <domain> <subdomain>
 # Display information about subdomains.
 
-domain_information() {
-    local domain=$1
-    local subdomain=$2
-    # Fetch the DNS records for the subdomain
-    local result=$(dig +short "$subdomain.$domain")
-
-    # If the result is not empty, display the information
-    if [ -n "$result" ]; then
-        echo "$subdomain $result" | awk -v subdomain="$subdomain" '{print "The subdomain " subdomain " is an A record and points to " $2}'
-    else
-        echo "No information found for subdomain $subdomain.$domain"
-    fi
+domain_information () {
+    line=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+    echo "$2 $line" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Check the number of arguments
-if [ "$#" -eq 1 ]; then
-    # If only the domain is provided
-    domain=$1
-    domain_information "$domain" "www"
-    domain_information "$domain" "lb-01"
-    domain_information "$domain" "web-01"
-    domain_information "$domain" "web-02"
-elif [ "$#" -eq 2 ]; then
-    # If domain and subdomain are provided
-    domain=$1
-    subdomain=$2
-    domain_information "$domain" "$subdomain"
-else
-    echo "Usage: $0 <domain> [subdomain]"
-    exit 1
+if [ "$#" == 1 ]
+then
+  domain_information "$1" "www"
+  domain_information "$1" "lb-01"
+  domain_information "$1" "web-01"
+  domain_information "$1" "web-02"
+elif [ "$#" == 2 ]
+then
+  domain_information "$1" "$2"
 fi
