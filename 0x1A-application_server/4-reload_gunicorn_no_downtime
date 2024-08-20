@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Gracefully reload Gunicorn processes
+
+# Check if Gunicorn master process is running
+if pgrep gunicorn > /dev/null; then
+    echo "Gunicorn master process is running. Reloading workers gracefully..."
+    # Send HUP signal to the Gunicorn master process to reload workers
+    pkill -HUP gunicorn
+    echo "Reload signal sent to Gunicorn master process."
+else
+    echo "Gunicorn master process is not running."
+fi
+
